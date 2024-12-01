@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "tim.h"
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -206,6 +207,7 @@ void StartTask01(void *argument)
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
     osDelay(950);
     run_exit(0x00020000);
+    HAL_UART_Transmit(&huart1, (uint8_t const *)"0x1\r\n", 5, 1000);
   }
   /* USER CODE END StartTask01 */
 }
@@ -356,3 +358,4 @@ void Custom_traceTASK_SWITCHED_OUT(void)
   curr_stamp = TIMESTAMP_CNT;
 }
 /* USER CODE END Application */
+
