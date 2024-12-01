@@ -180,15 +180,28 @@ void StartDefaultTask(void *argument)
 * @retval None
 */
 /* USER CODE END Header_StartTask01 */
+volatile uint32_t curr_run;
+void run_enter(uint32_t run)
+{
+  curr_run = run;
+}
+
+void run_exit(uint32_t run)
+{
+  curr_run = run;
+}
+
 void StartTask01(void *argument)
 {
   /* USER CODE BEGIN StartTask01 */
   (void)argument;
   for ( ; ; ) {
+    run_enter(0x00020001);
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
-    HAL_Delay(50);
+    HAL_Delay(100);
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
     osDelay(950);
+    run_exit(0x00020000);
   }
   /* USER CODE END StartTask01 */
 }
@@ -205,15 +218,19 @@ void StartTask02(void *argument)
   /* USER CODE BEGIN StartTask02 */
   (void)argument;
   for ( ; ; ) {
+    run_enter(0x00030002);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
-    HAL_Delay(50);
+    HAL_Delay(150);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
     osDelay(450);
+    run_exit(0x00030000);
 
+    run_enter(0x00030003);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
-    HAL_Delay(50);
+    HAL_Delay(350);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
     osDelay(450);
+    run_exit(0x00030000);
   }
   /* USER CODE END StartTask02 */
 }
@@ -317,15 +334,18 @@ extern PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB;
 char const *volatile taskname;
 volatile uint32_t taskin;
 volatile uint32_t taskout;
+volatile uint32_t prev_run[64];
 
 void Custom_traceTASK_SWITCHED_IN(void)
 {
   taskname = pxCurrentTCB->pcTaskName;
   taskin = pxCurrentTCB->uxTCBNumber;
+  curr_run = prev_run[taskin];
 }
 
 void Custom_traceTASK_SWITCHED_OUT(void)
 {
   taskout = pxCurrentTCB->uxTCBNumber;
+  prev_run[taskout] = curr_run;
 }
 /* USER CODE END Application */
