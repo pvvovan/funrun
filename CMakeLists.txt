@@ -66,3 +66,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
     # Add user defined libraries
 )
+
+set_target_properties(${CMAKE_PROJECT_NAME}
+    PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/stm32h723zgtx_flash.ld)

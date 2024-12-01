@@ -22,17 +22,16 @@ void OnProjectLoad (void) {
   //
   // Dialog-generated settings
   //
-  Project.AddPathSubstitute ("/home/vovan/mySTM/h723runrate", "$(ProjectDir)");
-  Project.AddPathSubstitute ("/home/vovan/mystm/h723runrate", "$(ProjectDir)");
   Project.SetDevice ("STM32H723ZG");
   Project.SetHostIF ("USB", "801048169");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.AddSvdFile ("$(InstallDir)/Config/CPU/Cortex-M7F.svd");
-  Project.AddSvdFile ("/home/vovan/mySTM/h723runrate/STM32H723.svd");
+  Project.AddSvdFile ("$(ProjectDir)/STM32H723.svd");
   //
   // User settings
   //
+  Project.SetOSPlugin ("FreeRTOSPlugin_CM4");
   File.Open ("$(ProjectDir)/build/Debug/h723runrate.elf");
 }
 
