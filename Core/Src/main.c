@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "memorymap.h"
 #include "gpio.h"
 
@@ -50,6 +51,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MPU_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -95,6 +97,17 @@ int main(void)
 
   /* USER CODE END 2 */
 
+  /* Init scheduler */
+  osKernelInitialize();
+
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
@@ -102,7 +115,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_Delay(500);
+    HAL_Delay(100);
     HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_0);
   }
   /* USER CODE END 3 */
@@ -198,6 +211,27 @@ void MPU_Config(void)
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM16 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM16) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
 }
 
 /**
