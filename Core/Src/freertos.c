@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "tim.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -71,7 +71,22 @@ const osThreadAttr_t myTask02_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
+volatile uint32_t curr_run;
+volatile uint32_t curr_stamp;
 
+#define TIMESTAMP_CNT    htim23.Instance->CNT
+
+void run_enter(uint32_t run)
+{
+  curr_run = run;
+  curr_stamp = TIMESTAMP_CNT;
+}
+
+void run_exit(uint32_t run)
+{
+  curr_run = run;
+  curr_stamp = TIMESTAMP_CNT;
+}
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -180,21 +195,6 @@ void StartDefaultTask(void *argument)
 * @retval None
 */
 /* USER CODE END Header_StartTask01 */
-#define SYST_CVR  (*((volatile uint32_t *)(0xE000E018))) /* SysTick current value register */
-volatile uint32_t curr_run;
-volatile uint32_t curr_stamp;
-void run_enter(uint32_t run)
-{
-  curr_run = run;
-  curr_stamp = SYST_CVR;
-}
-
-void run_exit(uint32_t run)
-{
-  curr_run = run;
-  curr_stamp = SYST_CVR;
-}
-
 void StartTask01(void *argument)
 {
   /* USER CODE BEGIN StartTask01 */
@@ -345,7 +345,7 @@ void Custom_traceTASK_SWITCHED_IN(void)
   taskname = pxCurrentTCB->pcTaskName;
   taskin = pxCurrentTCB->uxTCBNumber;
   curr_run = prev_run[taskin];
-  curr_stamp = SYST_CVR;
+  curr_stamp = TIMESTAMP_CNT;
 }
 
 void Custom_traceTASK_SWITCHED_OUT(void)
@@ -353,6 +353,6 @@ void Custom_traceTASK_SWITCHED_OUT(void)
   taskout = pxCurrentTCB->uxTCBNumber;
   prev_run[taskout] = curr_run;
   curr_run = 0;
-  curr_stamp = SYST_CVR;
+  curr_stamp = TIMESTAMP_CNT;
 }
 /* USER CODE END Application */
