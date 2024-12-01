@@ -11,7 +11,7 @@
     "displayTimeUnit": "ms",
     "systemTraceEvents": "SystemTraceData",
     "otherData": {
-        "version": "My Application v1.0"
+        "version": "Fun Run v0.0"
     },
     "stackFrames": {},
     "samples": []
