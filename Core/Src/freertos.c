@@ -175,7 +175,15 @@ void StartTask02(void *argument)
   /* USER CODE BEGIN StartTask02 */
   (void)argument;
   for ( ; ; ) {
-    osDelay(1);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
+    HAL_Delay(50);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+    osDelay(450);
+
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+    HAL_Delay(50);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+    osDelay(450);
   }
   /* USER CODE END StartTask02 */
 }
