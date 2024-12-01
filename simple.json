@@ -1,0 +1,17 @@
+{
+    "traceEvents": [
+        { "name": "InitRun", "cat": "foo", "ph": "X", "ts":       0.354, "dur":  300, "pid": "Core 0", "tid": "Task0" },
+        { "name": "Run_1ms", "cat": "foo", "ph": "X", "ts":    1000.235, "dur":  100, "pid": "Core 0", "tid": "Task0" },
+        { "name": "Run_1ms", "cat": "foo", "ph": "X", "ts":    2000.356, "dur":  566, "pid": "Core 0", "tid": "Task0" },
+        { "name": "InitRun", "cat": "foo", "ph": "X", "ts":     100.662, "dur":  500, "pid": "Core 1", "tid": "Task1" },
+        { "name": "Main_Func", "cat": "foo", "ph": "X", "ts":    1236.564, "dur":  86.445, "pid": "Core 1", "tid": "Task1" },
+        { "name": "Main_Func", "cat": "foo", "ph": "X", "ts":    2740.000, "dur":  226.454, "pid": "Core 1", "tid": "Task1" }
+    ],
+    "displayTimeUnit": "ms",
+    "systemTraceEvents": "SystemTraceData",
+    "otherData": {
+        "version": "My Application v1.0"
+    },
+    "stackFrames": {},
+    "samples": []
+}

@@ -216,8 +216,8 @@ void StartTask01(void *argument)
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
     HAL_Delay(100);
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
-    osDelay(950);
     run_exit(0x00020000);
+    osDelay(950);
   }
   /* USER CODE END StartTask01 */
 }
@@ -238,15 +238,15 @@ void StartTask02(void *argument)
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
     HAL_Delay(150);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
-    osDelay(450);
     run_exit(0x00030000);
+    osDelay(450);
 
     run_enter(0x00030003);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
     HAL_Delay(350);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-    osDelay(450);
     run_exit(0x00030000);
+    osDelay(450);
   }
   /* USER CODE END StartTask02 */
 }
@@ -354,20 +354,27 @@ volatile uint32_t prev_run[64];
 
 void Custom_traceTASK_SWITCHED_IN(void)
 {
+  static uint32_t curr_run_prev;
   taskname = pxCurrentTCB->pcTaskName;
   taskin = pxCurrentTCB->uxTCBNumber;
   curr_run = prev_run[taskin];
   curr_stamp = TIMESTAMP_CNT;
-  dump_log();
+  if (curr_run_prev != curr_run) {
+    dump_log();
+  }
+  curr_run_prev = curr_run;
 }
 
 void Custom_traceTASK_SWITCHED_OUT(void)
 {
+  static uint32_t curr_run_prev;
   taskout = pxCurrentTCB->uxTCBNumber;
   prev_run[taskout] = curr_run;
-  curr_run = 0;
   curr_stamp = TIMESTAMP_CNT;
-  dump_log();
+  if (curr_run_prev != curr_run) {
+    dump_log();
+  }
+  curr_run_prev = curr_run;
 }
 /* USER CODE END Application */
 
