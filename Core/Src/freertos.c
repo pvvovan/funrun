@@ -27,6 +27,8 @@
 /* USER CODE BEGIN Includes */
 #include "tim.h"
 #include "usart.h"
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,16 +79,25 @@ volatile uint32_t curr_stamp;
 
 #define TIMESTAMP_CNT    htim23.Instance->CNT
 
+void dump_log(void)
+{
+  uint8_t buf[128];
+  snprintf((char *)&buf[0], sizeof(buf), "0x%08lX 0x%08lX\r\n", curr_run,curr_stamp);
+  HAL_UART_Transmit(&huart1, buf, strlen((char *)&buf[0]), 1000);
+}
+
 void run_enter(uint32_t run)
 {
   curr_run = run;
   curr_stamp = TIMESTAMP_CNT;
+  dump_log();
 }
 
 void run_exit(uint32_t run)
 {
   curr_run = run;
   curr_stamp = TIMESTAMP_CNT;
+  dump_log();
 }
 /* USER CODE END FunctionPrototypes */
 
@@ -207,7 +218,6 @@ void StartTask01(void *argument)
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
     osDelay(950);
     run_exit(0x00020000);
-    HAL_UART_Transmit(&huart1, (uint8_t const *)"0x1\r\n", 5, 1000);
   }
   /* USER CODE END StartTask01 */
 }
@@ -348,6 +358,7 @@ void Custom_traceTASK_SWITCHED_IN(void)
   taskin = pxCurrentTCB->uxTCBNumber;
   curr_run = prev_run[taskin];
   curr_stamp = TIMESTAMP_CNT;
+  dump_log();
 }
 
 void Custom_traceTASK_SWITCHED_OUT(void)
@@ -356,6 +367,7 @@ void Custom_traceTASK_SWITCHED_OUT(void)
   prev_run[taskout] = curr_run;
   curr_run = 0;
   curr_stamp = TIMESTAMP_CNT;
+  dump_log();
 }
 /* USER CODE END Application */
 
