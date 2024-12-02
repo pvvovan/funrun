@@ -75,8 +75,8 @@ const osThreadAttr_t myTask02_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-volatile uint32_t curr_run;
-volatile uint32_t curr_stamp;
+volatile uint32_t curr_run = 0xFFFFffff;
+volatile uint32_t curr_stamp = 0xFFFFffff;
 
 #define TIMESTAMP_CNT    htim23.Instance->CNT
 
@@ -348,16 +348,25 @@ which static variables must be declared volatile. */
 extern PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB;
 
 
-char const *volatile taskname;
-volatile uint32_t taskin;
-volatile uint32_t taskout;
-volatile uint32_t prev_run[64];
+volatile uint32_t prev_run[64] = {
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff,
+  0xFFFFffff
+};
 
 void Custom_traceTASK_SWITCHED_IN(void)
 {
-  static uint32_t curr_run_prev;
-  taskname = pxCurrentTCB->pcTaskName;
-  taskin = pxCurrentTCB->uxTCBNumber;
+  static uint32_t curr_run_prev = 0xFFFFffff;
+  const uint32_t taskin = pxCurrentTCB->uxTCBNumber;
   curr_run = prev_run[taskin];
   curr_stamp = TIMESTAMP_CNT;
   if (curr_run_prev != curr_run) {
@@ -368,8 +377,8 @@ void Custom_traceTASK_SWITCHED_IN(void)
 
 void Custom_traceTASK_SWITCHED_OUT(void)
 {
-  static uint32_t curr_run_prev;
-  taskout = pxCurrentTCB->uxTCBNumber;
+  static uint32_t curr_run_prev = 0xFFFFffff;
+  const uint32_t taskout = pxCurrentTCB->uxTCBNumber;
   prev_run[taskout] = curr_run;
   curr_stamp = TIMESTAMP_CNT;
   if (curr_run_prev != curr_run) {
