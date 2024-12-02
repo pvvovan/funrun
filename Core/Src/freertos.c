@@ -29,6 +29,7 @@
 #include "usart.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,25 +80,25 @@ volatile uint32_t curr_stamp;
 
 #define TIMESTAMP_CNT    htim23.Instance->CNT
 
-void dump_log(void)
+void dump_log(const char *tag)
 {
   uint8_t buf[128];
-  snprintf((char *)&buf[0], sizeof(buf), "0x%08lX 0x%08lX\r\n", curr_run,curr_stamp);
+  snprintf((char *)&buf[0], sizeof(buf), "%s 0x%08lX 0x%08lX\n", tag, curr_run,curr_stamp);
   HAL_UART_Transmit(&huart1, buf, strlen((char *)&buf[0]), 1000);
 }
 
-void run_enter(uint32_t run)
+void run_begin(uint32_t run)
 {
   curr_run = run;
   curr_stamp = TIMESTAMP_CNT;
-  dump_log();
+  dump_log("begin");
 }
 
-void run_exit(uint32_t run)
+void run_end(uint32_t run)
 {
   curr_run = run;
   curr_stamp = TIMESTAMP_CNT;
-  dump_log();
+  dump_log("end");
 }
 /* USER CODE END FunctionPrototypes */
 
@@ -212,11 +213,11 @@ void StartTask01(void *argument)
   /* USER CODE BEGIN StartTask01 */
   (void)argument;
   for ( ; ; ) {
-    run_enter(0x00020001);
+    run_begin(0x00010001);
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
     HAL_Delay(100);
     HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
-    run_exit(0x00020000);
+    run_end(0x00010000);
     osDelay(950);
   }
   /* USER CODE END StartTask01 */
@@ -234,18 +235,18 @@ void StartTask02(void *argument)
   /* USER CODE BEGIN StartTask02 */
   (void)argument;
   for ( ; ; ) {
-    run_enter(0x00030002);
+    run_begin(0x00020002);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
     HAL_Delay(150);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
-    run_exit(0x00030000);
+    run_end(0x00020000);
     osDelay(450);
 
-    run_enter(0x00030003);
+    run_begin(0x00020003);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
     HAL_Delay(350);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-    run_exit(0x00030000);
+    run_end(0x00020000);
     osDelay(450);
   }
   /* USER CODE END StartTask02 */
@@ -360,7 +361,7 @@ void Custom_traceTASK_SWITCHED_IN(void)
   curr_run = prev_run[taskin];
   curr_stamp = TIMESTAMP_CNT;
   if (curr_run_prev != curr_run) {
-    dump_log();
+    dump_log("in");
   }
   curr_run_prev = curr_run;
 }
@@ -372,7 +373,7 @@ void Custom_traceTASK_SWITCHED_OUT(void)
   prev_run[taskout] = curr_run;
   curr_stamp = TIMESTAMP_CNT;
   if (curr_run_prev != curr_run) {
-    dump_log();
+    dump_log("out");
   }
   curr_run_prev = curr_run;
 }
