@@ -1,4 +1,9 @@
 import json
+import sys
+
+
+print("""{
+    "traceEvents": [""")
 
 
 def get_func(id):
@@ -47,10 +52,10 @@ def get_task(id):
         return "none"
 
 
-file_stamps = open("./stamp2plot.txt", "r")
+file_stamps = open(sys.argv[1], "r")
 stamps = file_stamps.readlines()
 start = 0
-end = len(stamps)
+end = len(stamps) - 1
 
 for stamp in stamps:
         if stamp.split(" ")[0] == "in" and start != 0:
@@ -60,19 +65,32 @@ for stamp in stamps:
 i = start
 while True:
         curr = int(stamps[i].split(" ")[2].split("\n")[0], 16)
-        prev = int(stamps[i-1].split(" ")[2].split("\n")[0], 16)
+        next = int(stamps[i + 1].split(" ")[2].split("\n")[0], 16)
         func = get_func(stamps[i].split(" ")[1])
         epoch = {
                 "name": func,
                 "cat": "foo",
                 "ph": "X",
                 "ts": curr / 1000,
-                "dur": (curr - prev)/1000,
+                "dur": (next - curr) / 1000,
                 "pid": get_core(func),
                 "tid": get_task(func)
         }
         epoch_raw = json.dumps(epoch)
-        print(epoch_raw + ",")
+        print("        " + epoch_raw, end ="")
         i += 1
         if i == end:
+                print("")
                 break
+        else:
+                print(",")
+
+print("""    ],
+    "displayTimeUnit": "ms",
+    "systemTraceEvents": "SystemTraceData",
+    "otherData": {
+        "version": "Fun Run v0.0"
+    },
+    "stackFrames": {},
+    "samples": []
+}""")
