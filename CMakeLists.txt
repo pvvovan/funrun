@@ -44,7 +44,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
-    fun::run
+    PRIVATE fun::run
 )
 
 set_target_properties(${CMAKE_PROJECT_NAME}
