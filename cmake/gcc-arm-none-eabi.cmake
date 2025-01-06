@@ -8,7 +8,7 @@ set(CMAKE_CXX_COMPILER_ID GNU)
 
 # Some default GCC settings
 # arm-none-eabi- must be part of path environment
-set(GCC_PATH              "/home/vovan/mySTM/arm-gnu-toolchain-13.3.rel1-x86_64-arm-none-eabi/bin/")
+set(GCC_PATH              /mnt/sda1/pvv/gcc/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin/)
 set(TOOLCHAIN_PREFIX                ${GCC_PATH}arm-none-eabi-)
 
 set(CMAKE_C_COMPILER                ${TOOLCHAIN_PREFIX}gcc)
