@@ -19,7 +19,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 enable_language(C ASM)
 
 # Core project settings
-project(nucleo_h723)
+project(h723)
 
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
@@ -44,7 +44,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
-    funrun::funrun
+    fun::run
 )
 
 set_target_properties(${CMAKE_PROJECT_NAME}

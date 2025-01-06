@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(funrun C ASM)
 add_library(funrun INTERFACE)
-add_library(funrun::funrun ALIAS funrun)
+add_library(fun::run ALIAS funrun)
 
 target_compile_definitions(funrun INTERFACE
 	USE_PWR_LDO_SUPPLY 
